@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Targhe ospiti BookCity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blu: #1f3a68;
+    --blu-scuro: #172c50;
+    --rosso: #e63946;
+    --testo: #1d2433;
+    --grigio: #5b6475;
+    --oro: #b8975a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Montserrat", system-ui, sans-serif; background: #e9ecf2; color: var(--testo); }
+
+  /* ---------- Pannello di controllo (solo schermo) ---------- */
+  .pannello {
+    position: sticky; top: 0; z-index: 10;
+    background: #fff; border-bottom: 1px solid #d6dbe4;
+    padding: 14px 24px; display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: end;
+  }
+  .pannello h1 { font-size: 16px; font-weight: 800; color: var(--blu); width: 100%; }
+  .pannello label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--grigio); display: flex; flex-direction: column; gap: 5px; }
+  .pannello select, .pannello input {
+    font: 500 14px "Montserrat", sans-serif; padding: 8px 10px; border: 1px solid #c5ccd8; border-radius: 6px; min-width: 240px; background: #fff;
+  }
+  .pannello select#frase { min-width: 420px; max-width: 100%; }
+  .pannello button {
+    font: 700 13px "Montserrat", sans-serif; padding: 9px 16px; border-radius: 6px; border: 0; background: var(--blu); color: #fff; cursor: pointer;
+  }
+
+  .frasi { max-width: 1200px; margin: 24px auto 0; padding: 0 24px; }
+  .frasi h2 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--grigio); margin-bottom: 10px; }
+  .frasi ol { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; counter-reset: f; }
+  .frasi li {
+    counter-increment: f; background: #fff; border-radius: 8px; padding: 12px 14px 12px 44px; position: relative;
+    font-size: 14px; line-height: 1.45; cursor: pointer; border: 2px solid transparent;
+  }
+  .frasi li::before { content: counter(f); position: absolute; left: 14px; top: 11px; font-weight: 800; color: var(--rosso); }
+  .frasi li.attiva { border-color: var(--blu); }
+
+  .galleria { max-width: 1200px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)); gap: 28px; }
+  .scheda h3 { font-size: 13px; font-weight: 800; color: var(--blu); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .scheda h3 span { font-weight: 500; color: var(--grigio); }
+  .scheda h3 button { font: 700 11px "Montserrat"; background: none; border: 1px solid var(--blu); color: var(--blu); border-radius: 5px; padding: 4px 9px; cursor: pointer; }
+  .scala { width: 100%; aspect-ratio: 210 / 148; position: relative; overflow: hidden; box-shadow: 0 6px 22px rgba(20,30,60,.18); }
+  .scala .targa { position: absolute; top: 0; left: 0; transform-origin: top left; }
+
+  /* ---------- Targa: A5 orizzontale 210 x 148 mm ---------- */
+  .targa { width: 210mm; height: 148mm; position: relative; overflow: hidden; background: #fff; }
+  .loghi { display: flex; align-items: center; }
+  .loghi img { display: block; }
+  .l-iel { height: 12mm; }
+  .l-pdm { height: 12.5mm; }
+  .l-bc  { height: 20mm; }
+  .sep { width: .3mm; align-self: stretch; background: #cfd5df; }
+
+  /* === 1. CLASSICA ISTITUZIONALE === */
+  .t1 { padding: 9mm; }
+  .t1 .cornice { position: absolute; inset: 6mm; border: .7mm solid var(--blu); }
+  .t1 .cornice::after { content: ""; position: absolute; inset: 1.4mm; border: .25mm solid var(--blu); }
+  .t1 .dentro { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6mm 10mm 6mm; }
+  .t1 .loghi { gap: 7mm; justify-content: center; }
+  .t1 .a { margin-top: auto; font: italic 600 7mm "Cormorant Garamond", serif; color: var(--grigio); }
+  .t1 .nome { font: 700 16mm/1.05 "Cormorant Garamond", serif; color: var(--blu); margin-top: 1mm; }
+  .t1 .filetto { width: 34mm; height: .7mm; background: var(--rosso); margin: 4mm auto 4mm; }
+  .t1 .frase { font: italic 500 7.4mm/1.32 "Cormorant Garamond", serif; color: var(--testo); max-width: 160mm; }
+  .t1 .data { margin-top: auto; font: 600 3.8mm "Montserrat"; letter-spacing: .25em; text-transform: uppercase; color: var(--blu); }
+
+  /* === 2. BANDA LATERALE === */
+  .t2 { display: grid; grid-template-columns: 62mm 1fr; }
+  .t2 .banda { background: var(--blu); color: #fff; padding: 12mm 9mm; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+  .t2 .banda::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 2.2mm; background: var(--rosso); }
+  .t2 .grazie { font: 900 15mm/0.95 "Montserrat"; letter-spacing: -.02em; }
+  .t2 .grazie span { display: block; color: var(--rosso); }
+  .t2 .evento { font: 700 3mm/1.6 "Montserrat"; letter-spacing: .18em; text-transform: uppercase; opacity: .85; }
+  .t2 .evento b { display: block; font-size: 4.4mm; letter-spacing: .04em; opacity: 1; }
+  .t2 .corpo { padding: 10mm 11mm 8mm 12mm; display: flex; flex-direction: column; }
+  .t2 .a { margin-top: auto; font: 800 5mm "Montserrat"; letter-spacing: .25em; text-transform: uppercase; color: var(--rosso); }
+  .t2 .nome { font: 800 11.5mm/1.05 "Montserrat"; color: var(--blu); margin-top: 2mm; letter-spacing: -.01em; }
+  .t2 .frase { font: italic 500 6.6mm/1.38 "Playfair Display", serif; color: var(--testo); margin-top: 6mm; }
+  .t2 .data { margin-top: 6mm; font: 600 4.2mm "Montserrat"; color: var(--grigio); }
+  .t2 .loghi { margin-top: auto; gap: 6mm; justify-content: space-between; padding-top: 5mm; border-top: .3mm solid #dfe3ea; }
+  .t2 .l-iel { height: 9.5mm; } .t2 .l-pdm { height: 10mm; } .t2 .l-bc { height: 16mm; }
+
+  /* === 3. MODERNA (stile save the date) === */
+  .t3 { display: flex; flex-direction: column; }
+  .t3 .strisce { height: 4.5mm; background: repeating-linear-gradient(90deg, var(--rosso) 0 22mm, var(--blu) 22mm 26mm); flex: none; }
+  .t3 .corpo { flex: 1; padding: 10mm 14mm 0; display: flex; flex-direction: column; }
+  .t3 .top { display: flex; justify-content: space-between; align-items: center; }
+  .t3 .tag { font: 800 3.6mm "Montserrat"; letter-spacing: .3em; color: var(--grigio); text-transform: uppercase; }
+  .t3 .tag b { color: var(--rosso); }
+  .t3 .riga { display: flex; align-items: baseline; gap: 4mm; margin-top: auto; }
+  .t3 .a { font: 900 14mm/1 "Montserrat"; color: var(--rosso); }
+  .t3 .nome { font: 900 14mm/1 "Montserrat"; color: var(--blu); letter-spacing: -.02em; }
+  .t3 .frase { margin-top: 7mm; font: 500 6.3mm/1.45 "Montserrat"; color: var(--testo); max-width: 165mm; padding-left: 5mm; border-left: 1.2mm solid var(--rosso); }
+  .t3 .data { margin-top: auto; margin-bottom: 6mm; font: 800 4.8mm "Montserrat"; color: var(--blu); }
+  .t3 .piede { flex: none; background: #f2f4f8; padding: 5mm 14mm; }
+  .t3 .loghi { gap: 8mm; justify-content: space-between; }
+  .t3 .l-iel { height: 11mm; } .t3 .l-pdm { height: 11.5mm; } .t3 .l-bc { height: 16mm; }
+
+  /* === 4. EDITORIALE / LIBRERIA === */
+  /* senza sfondo: il fondo della targa è il metallo, il bianco = nessuna stampa */
+  .t4 { background: #fff; padding: 10mm 14mm 0; display: flex; flex-direction: column; }
+  .t4 .loghi { justify-content: space-between; }
+  .t4 .l-iel { height: 11mm; } .t4 .l-pdm { height: 11.5mm; } .t4 .l-bc { height: 17mm; }
+  .t4 .centro { flex: 1; display: grid; grid-template-columns: 18mm 1fr; column-gap: 4mm; align-content: center; padding-bottom: 4mm; }
+  .t4 .virg { font: 700 30mm/0.8 "Playfair Display", serif; color: var(--rosso); grid-row: span 3; }
+  .t4 .a { font: 700 4.6mm "Montserrat"; letter-spacing: .3em; text-transform: uppercase; color: var(--oro); }
+  .t4 .nome { font: 700 14mm/1.05 "Playfair Display", serif; color: var(--blu); margin-top: 1.5mm; }
+  .t4 .frase { font: italic 500 7.4mm/1.32 "Cormorant Garamond", serif; color: var(--testo); margin-top: 4mm; max-width: 155mm; }
+  .t4 .base { flex: none; display: flex; justify-content: space-between; align-items: flex-end; }
+  .t4 .data { font: italic 600 5.6mm "Cormorant Garamond", serif; color: var(--blu); padding-bottom: 5mm; }
+  .t4 .scaffale { display: flex; align-items: flex-end; gap: 1.1mm; padding-bottom: 1.6mm; position: relative; }
+  .t4 .scaffale i { display: block; width: 2.6mm; background: var(--rosso); position: relative; }
+  .t4 .scaffale i { -webkit-mask: linear-gradient(#000 0 18%, transparent 18% calc(18% + .35mm), #000 0); mask: linear-gradient(#000 0 18%, transparent 18% calc(18% + .35mm), #000 0); }
+  .t4 .scaffale::after { content: ""; position: absolute; left: -2mm; right: -2mm; bottom: 0; height: .9mm; background: var(--rosso); }
+  .t4 .fondo { flex: none; height: 3mm; background: var(--blu); margin: 0 -14mm; }
+
+  /* ---------- Stampa ---------- */
+  @page { size: 210mm 148mm; margin: 0; }
+  @media print {
+    body { background: #fff; }
+    .pannello, .frasi, .scheda h3 { display: none !important; }
+    .galleria { display: block; padding: 0; max-width: none; }
+    .scheda { break-after: page; }
+    body.solo .scheda:not(.stampa) { display: none; }
+    .scala { width: 210mm; height: 148mm; aspect-ratio: auto; box-shadow: none; }
+    .scala .targa { transform: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="pannello">
+  <h1>Targhe ospiti · BookCity Milano 2026 · formato A5 orizzontale (210 × 148 mm)</h1>
+  <label>Ospite <select id="ospite"></select></label>
+  <label>Nome sulla targa <input id="nome" placeholder="Nome e cognome"></label>
+  <label>Data <input id="data"></label>
+  <label>Frase <select id="frase"></select></label>
+  <label>Vista <select id="vista"></select></label>
+  <button onclick="stampa()">Stampa tutte</button>
+</div>
+
+<section class="frasi">
+  <h2>Le 8 proposte di frase · clicca per provarla sulle targhe</h2>
+  <ol id="lista-frasi"></ol>
+</section>
+
+<div class="galleria" id="galleria"></div>
+
+<script src="../eventi-v2.js"></script>
+<script>
+const FRASI = [
+  "con gratitudine per aver condiviso con i nostri studenti la sua storia, le sue parole e la sua passione.",
+  "per aver acceso nei nostri ragazzi la curiosità di leggere, di ascoltare e di guardare lontano.",
+  "grazie per aver reso la nostra scuola, per un giorno, una piazza di idee, racconti e futuro.",
+  "perché ogni libro è un incontro, e il suo ha aperto nuove strade ai nostri ragazzi.",
+  "con riconoscenza per aver ricordato ai nostri giovani che i sogni si costruiscono con passione, impegno e coraggio.",
+  "grazie per aver donato ai nostri studenti tempo, esperienza e parole capaci di lasciare il segno.",
+  "per averci ricordato che le parole, come i mestieri, si imparano con passione e si custodiscono con cura.",
+  "con affetto e gratitudine, per una storia che ha insegnato, ispirato e lasciato qualcosa in ognuno di noi.",
+];
+
+// Un ospite = una targa (Sonia Montegiove ha due incontri lo stesso giorno: una sola targa)
+const OSPITI = [];
+for (const e of EVENTI) {
+  const g = GIORNI.find(x => x.id === e.giorno);
+  const data = `${g.data} 2026`;
+  if (!OSPITI.some(o => o.nome === e.ospite)) OSPITI.push({ nome: e.ospite, data });
+  if (e.con) {
+    const altro = e.con.replace(/^con\s+/, "");
+    if (!OSPITI.some(o => o.nome === altro)) OSPITI.push({ nome: altro, data });
+  }
+}
+
+const LOGHI = `
+  <img class="l-iel" src="logo-iel.png" alt="Immaginazione e Lavoro">
+  <img class="l-pdm" src="logo-pdm.png" alt="Piazza dei Mestieri">
+  <img class="l-bc"  src="logo-bookcity.png" alt="BookCity Milano">`;
+const LOGHI_SEP = LOGHI.replace(/>\s*</g, '><span class="sep"></span><');
+
+function scaffale() {
+  const h = [9, 12, 8, 14, 10, 16, 11, 13, 7, 12];
+  return `<div class="scaffale">${h.map(x => `<i style="height:${x}mm"></i>`).join("")}</div>`;
+}
+
+const MODELLI = [
+  {
+    titolo: "1 · Classica istituzionale", nota: "cornice doppia, tutto centrato",
+    html: d => `
+      <div class="targa t1"><div class="cornice"></div><div class="dentro">
+        <div class="loghi">${LOGHI_SEP}</div>
+        <div class="a">A</div>
+        <div class="nome">${d.nome},</div>
+        <div class="filetto"></div>
+        <div class="frase">${d.frase}</div>
+        <div class="data">Milano, ${d.data}</div>
+      </div></div>`
+  },
+  {
+    titolo: "2 · Banda laterale", nota: "blu Piazza + accento rosso BookCity",
+    html: d => `
+      <div class="targa t2">
+        <div class="banda">
+          <div class="grazie">Gra<br>zie<span>!</span></div>
+          <div class="evento"><b>BookCity Milano</b>2026 · Piazza dei Mestieri</div>
+        </div>
+        <div class="corpo">
+          <div class="a">A</div>
+          <div class="nome">${d.nome},</div>
+          <div class="frase">${d.frase}</div>
+          <div class="data">Milano, ${d.data}</div>
+          <div class="loghi">${LOGHI}</div>
+        </div>
+      </div>`
+  },
+  {
+    titolo: "3 · Moderna", nota: "coordinata con il Save the Date",
+    html: d => `
+      <div class="targa t3">
+        <div class="strisce"></div>
+        <div class="corpo">
+          <div class="top"><div class="tag"><b>BookCity Milano 2026</b> · Piazza dei Mestieri</div></div>
+          <div class="riga"><span class="a">A</span><span class="nome">${d.nome},</span></div>
+          <div class="frase">${d.frase}</div>
+          <div class="data">Milano, ${d.data}</div>
+        </div>
+        <div class="piede"><div class="loghi">${LOGHI}</div></div>
+      </div>`
+  },
+  {
+    titolo: "4 · Editoriale", nota: "senza sfondo (targa metallica), scaffale di libri",
+    html: d => `
+      <div class="targa t4">
+        <div class="loghi">${LOGHI}</div>
+        <div class="centro">
+          <div class="virg">“</div>
+          <div class="a">A</div>
+          <div class="nome">${d.nome},</div>
+          <div class="frase">${d.frase}</div>
+        </div>
+        <div class="base">
+          <div class="data">Milano, ${d.data}</div>
+          ${scaffale()}
+        </div>
+        <div class="fondo"></div>
+      </div>`
+  },
+];
+
+const $ = id => document.getElementById(id);
+$("ospite").innerHTML = OSPITI.map((o, i) => `<option value="${i}">${esc(o.nome)} — ${esc(o.data)}</option>`).join("");
+$("frase").innerHTML = FRASI.map((f, i) => `<option value="${i}">${i + 1}. ${esc(f)}</option>`).join("");
+$("lista-frasi").innerHTML = FRASI.map((f, i) => `<li data-i="${i}">${esc(f)}</li>`).join("");
+
+function scegliOspite() {
+  const o = OSPITI[$("ospite").value];
+  $("nome").value = o.nome; $("data").value = o.data;
+  disegna();
+}
+
+function disegna() {
+  const d = { nome: esc($("nome").value), data: esc($("data").value), frase: esc(FRASI[$("frase").value]) };
+  const v = $("vista").value;
+  // "tutti" = i 4 modelli con la frase scelta; altrimenti un modello con le 8 frasi
+  const schede = v === "tutti"
+    ? MODELLI.map((m, i) => ({ titolo: m.titolo, nota: m.nota, html: m.html(d) }))
+    : FRASI.map((f, i) => ({ titolo: `Frase ${i + 1}`, nota: MODELLI[v].titolo, html: MODELLI[v].html({ ...d, frase: esc(f) }) }));
+  $("galleria").innerHTML = schede.map((s, i) => `
+    <div class="scheda" data-i="${i}">
+      <h3>${s.titolo} <span>${s.nota}</span> <button onclick="stampa(${i})">Stampa</button></h3>
+      <div class="scala">${s.html}</div>
+    </div>`).join("");
+  document.querySelectorAll("#lista-frasi li").forEach(li => li.classList.toggle("attiva", li.dataset.i === $("frase").value));
+  scala();
+}
+
+function scala() {
+  const mm = 96 / 25.4;
+  document.querySelectorAll(".scala").forEach(s => {
+    s.querySelector(".targa").style.transform = `scale(${s.clientWidth / (210 * mm)})`;
+  });
+}
+
+function stampa(i) {
+  document.body.classList.toggle("solo", i !== undefined);
+  document.querySelectorAll(".scheda").forEach(s => s.classList.toggle("stampa", +s.dataset.i === i));
+  window.print();
+}
+
+$("ospite").onchange = scegliOspite;
+$("frase").onchange = disegna;
+$("vista").onchange = disegna;
+$("nome").oninput = disegna;
+$("data").oninput = disegna;
+$("lista-frasi").onclick = e => { const li = e.target.closest("li"); if (li) { $("frase").value = li.dataset.i; disegna(); } };
+window.addEventListener("resize", scala);
+document.fonts.ready.then(scala);
+$("vista").innerHTML = `<option value="tutti">I 4 modelli</option>` +
+  MODELLI.map((m, i) => `<option value="${i}">${esc(m.titolo)} con le 8 frasi</option>`).join("");
+// es. targhe.html?ospite=3&frase=5&modello=4 (numeri da 1)
+const q = new URLSearchParams(location.search);
+if (q.get("modello")) $("vista").value = q.get("modello") - 1;
+if (q.get("ospite")) $("ospite").value = q.get("ospite") - 1;
+if (q.get("frase")) $("frase").value = q.get("frase") - 1;
+scegliOspite();
+</script>
+</body>
+</html>
