@@ -180,6 +180,12 @@ for (const e of EVENTI) {
   }
 }
 
+// Podcast live del 25 novembre (presente in eventi.js, non in eventi-v2.js): due targhe separate
+const DATA_PODCAST = `${GIORNI.find(x => x.id === "mer25").data} 2026`;
+for (const nome of ["Giulia Salemi", "Alessandro Cattelan"]) {
+  if (!OSPITI.some(o => o.nome === nome)) OSPITI.push({ nome, data: DATA_PODCAST });
+}
+
 const LOGHI = `
   <img class="l-iel" src="logo-iel.png" alt="Immaginazione e Lavoro">
   <img class="l-pdm" src="logo-pdm.png" alt="Piazza dei Mestieri">
